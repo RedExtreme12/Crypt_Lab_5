@@ -1,0 +1,4 @@
+Side [A -> B] proves : 2020-05-16-14.11.31
+-14.11.33
+Authentication success [A -> B] : 2020-05-16-14.11.31
+Side [A -> B] proves : 2020-05-16-14.11.33
