@@ -1,8 +1,9 @@
+import logging.config
 import random
 from math import gcd
-from primes_numbers import primes_numbers
+
 from hash_function import utils
-import logger
+from primes_numbers import primes_numbers
 from sockets_classes.server_socket import *
 
 COUNT_BYTES = 2048
@@ -10,6 +11,9 @@ KEY = 0x133457799BBCDFF1  # Hash-function.
 
 HASH_R_B_LENGTH = 20
 ID_LENGTH = 5
+
+logging.config.fileConfig('Configs/logging_RSA.conf', disable_existing_loggers=False)
+logger = logging.getLogger(__name__)
 
 
 def is_prime(x):
@@ -96,17 +100,16 @@ def encrypt_str(message, public_key):
 
 
 def decrypt_str(message, private_key):
-    (d,n) = private_key
+    (d, n) = private_key
     bin_str = ""
-    for i in range(0,len(message),n.bit_length()):
-        num = int(message[i:i+n.bit_length()],2)
-        dec_num = pow(num,d,n)
-        bin_str += format(dec_num, 'b').zfill(n.bit_length()-1)
+    for i in range(0,len(message), n.bit_length()):
+        num = int(message[i:i+n.bit_length()], 2)
+        dec_num = pow(num, d, n)
+        bin_str += format(dec_num, 'b').zfill(n.bit_length() - 1)
     return string_from_bits(bin_str[:bin_str.rfind("1")])
 
 
 # FROM CLIENT B
-# @logger.logger(logger.log_file_name)
 def auth_init(ID, public_key_A, sock, sides):
     R_B = primes_numbers.generate_prime_numbers(16)  # ~ 5 chars
 
@@ -120,12 +123,11 @@ def auth_init(ID, public_key_A, sock, sides):
     sock.send_string(enc)  # B to A
 
     if sock.recv_string() == str(R_B):
-        return f'Authentication success {sides}'
+        logger.info(f'Authentication success {sides}')
     else:
-        return f'Authentication failed'
+        logger.info(f'Authentication failed')
 
 
-# @logger.logger(logger.log_file_name)
 def auth_recv(private_key_A, client_socket, side):
     enc = client_socket.recv_string()
     key = enc[HASH_R_B_LENGTH + ID_LENGTH:]
@@ -133,7 +135,7 @@ def auth_recv(private_key_A, client_socket, side):
     decr = decrypt_str(key, private_key_A)[:-5]  # R_B
     client_socket.send_string(decr)
 
-    return f'Side {side} proves'  # {sides}
+    logging.info(f'Side {side} proves')  # {sides}
 
 
 # НЕ ТОТ ПРОТОКОЛ

@@ -1,7 +1,6 @@
 import random
 from primes_numbers import primes_numbers
 from math import gcd
-import logger
 
 
 class ElGamal:
@@ -87,20 +86,21 @@ class ElGamal:
         r = pow(g, k, p)
         gcd_a, inverted_k, b_coeff = self.xgcd(k, module)
         s = ((int_m - x * r) * inverted_k) % module
+
         return r, s
 
     def verify_sign(self, message, sign):
         p, g, y = self.public_key
         r, s = sign
         if (not (0 < r < p)) and (not (0 < s < p - 1)):
-            print("Invalid parameters")
-            return False
+            # print("Invalid parameters")
+            return False, "Invalid parameters"
 
         int_m = message
 
         if (pow(y, r, p) * pow(r, s, p)) % p == pow(g, int_m, p):
-            print("Verified")
-            return True
+            # print("Verified")
+            return True, "Verified"
         else:
-            print("Not verified")
-            return False
+            # print("Not verified")
+            return False, "Not verified"

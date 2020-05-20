@@ -23,10 +23,6 @@ def get_ip_address():
     return s.getsockname()[0]
 
 
-def logging():
-    pass
-
-
 if __name__ == "__main__":
     server_socket = ServerSocket(0)
 
@@ -35,9 +31,9 @@ if __name__ == "__main__":
     client_socket = server_socket.wait_for_client()
 
     # AUTH
-    print(RSA.auth_init(server_socket.s.getsockname()[1], public_key_A, client_socket, '[A -> B]'))
+    RSA.auth_init(server_socket.s.getsockname()[1], public_key_A, client_socket, '[A -> B]')
 
-    print(RSA.auth_recv(private_key_B, client_socket, 'A'))
+    RSA.auth_recv(private_key_B, client_socket, 'A')
 
     try:
         while True:

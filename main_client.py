@@ -18,9 +18,9 @@ if __name__ == "__main__":
     client_socket = ClientSocket.connect_to_server(server_host, port)
 
     # AUTH
-    print(RSA.auth_recv(private_key_A, client_socket, 'B'))
+    RSA.auth_recv(private_key_A, client_socket, 'B')
 
-    print(RSA.auth_init(port, public_key_B, client_socket, '[B -> A]'))
+    RSA.auth_init(port, public_key_B, client_socket, '[B -> A]')
 
     try:
         while True:
